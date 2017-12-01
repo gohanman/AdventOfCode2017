@@ -1,20 +1,20 @@
 
 extern crate proj_self;
 
-fn solve(bytes:&Vec<u8>, step:usize) -> u64 {
-    bytes.iter().enumerate().fold(0u64, | acc, (i,val)| {
+fn solve(bytes: &Vec<u8>, step: usize) -> u64 {
+    bytes.iter().enumerate().fold(0u64, |acc, (i, val)| {
         let next = bytes[(i + step) % bytes.len()];
         let inc = (*val as u64) - 48;
         if *val == next { acc + inc } else { acc }
     })
 }
 
-fn captcha(input:&str) -> u64 {
+fn captcha(input: &str) -> u64 {
     let bytes = input.trim().to_string().into_bytes();
     solve(&bytes, 1)
 }
 
-fn wide_captcha(input:&str) -> u64 {
+fn wide_captcha(input: &str) -> u64 {
     let bytes = input.trim().to_string().into_bytes();
     solve(&bytes, bytes.len() / 2)
 }
@@ -41,4 +41,3 @@ fn test() {
     let d = captcha("91212129");
     assert_eq!(9, d);
 }
-
