@@ -28,7 +28,7 @@ struct Point {
     mark: Mark,
 }
 
-fn proj_dir() -> PathBuf {
+fn proj_dir(depth: u32) -> PathBuf {
 
     fn rm_dirs(num: u32, path: PathBuf) -> PathBuf {
         if num == 0 {
@@ -40,7 +40,7 @@ fn proj_dir() -> PathBuf {
     }
 
     let exe = std::env::current_exe().unwrap();
-    rm_dirs(3, exe)
+    rm_dirs(depth, exe)
 }
 
 fn walk(cur: Point, key: &KeyPress) -> Point {
@@ -172,16 +172,30 @@ fn pair(points: &Vec<Point>) -> i32 {
     }
 }
 
-fn main() {
-    let proj = proj_dir();
+fn init(depth: u32) -> Vec<Point> {
+    let proj = proj_dir(depth);
     let file = proj.join("elvish_cheat_codes.txt");
     let mut input = String::new();
     let _io = std::fs::File::open(file).unwrap().read_to_string(
         &mut input,
     );
-    let points = get_points(&input);
+    get_points(&input)
+}
+
+fn main() {
+    let points = init(3);
     let f = furthest(&points);
     println!("Furthest: {}", f);
     let p = pair(&points);
     println!("Pair: {}", p);
 }
+
+#[test]
+fn test() {
+    let points = init(4);
+    let f = furthest(&points);
+    assert_eq!(86, f);
+    let p = pair(&points);
+    assert_eq!(137, p);
+}
+
