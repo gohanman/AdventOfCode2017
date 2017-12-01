@@ -17,14 +17,22 @@ fn proj_dir(depth: u32) -> PathBuf {
     rm_dirs(depth, exe)
 }
 
-fn captcha(input:&str) -> u64 {
-    let bytes = input.trim().to_string().into_bytes();
-    let num = bytes.iter().enumerate().fold(0u64, | acc, (i,val)| {
-        let next = bytes[(i+1) % bytes.len()];
+fn solve(bytes:&Vec<u8>, step:usize) -> u64 {
+    bytes.iter().enumerate().fold(0u64, | acc, (i,val)| {
+        let next = bytes[(i + step) % bytes.len()];
         let inc = (*val as u64) - 48;
         if *val == next { acc + inc } else { acc }
-    });
-    num
+    })
+}
+
+fn captcha(input:&str) -> u64 {
+    let bytes = input.trim().to_string().into_bytes();
+    solve(&bytes, 1)
+}
+
+fn wide_captcha(input:&str) -> u64 {
+    let bytes = input.trim().to_string().into_bytes();
+    solve(&bytes, bytes.len() / 2)
 }
 
 fn main() {
@@ -37,6 +45,8 @@ fn main() {
     println!("In: {}", input);
     let answer = captcha(&input);
     println!("Captcha {}", answer);
+    let answer2 = wide_captcha(&input);
+    println!("Captcha {}", answer2);
 }
 
 #[test]
