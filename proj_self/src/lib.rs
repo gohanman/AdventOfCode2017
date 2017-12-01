@@ -20,7 +20,7 @@ pub fn proj_dir(depth: u32) -> PathBuf {
 }
 
 // read a file into a string and return it
-pub fn file_to_str(file:&PathBuf) -> String {
+pub fn file_to_str(file: &PathBuf) -> String {
     let mut input = String::new();
     let _io = std::fs::File::open(file).unwrap().read_to_string(
         &mut input,
@@ -51,4 +51,3 @@ mod tests {
         assert!(my_code.len() > 0, "Couldn't find myself");
     }
 }
-
