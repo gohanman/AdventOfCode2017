@@ -1,0 +1,6 @@
+[package]
+name = "proj_self"
+version = "0.1.0"
+authors = ["Andy Theuninck <andy@gohanman.com>"]
+
+[dependencies]
