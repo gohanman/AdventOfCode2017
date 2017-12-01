@@ -1,7 +1,5 @@
 
-use std::path::PathBuf;
-use std::io::Read;
-use std::vec::Vec;
+extern crate proj_self;
 
 enum KeyPress {
     Up,
@@ -26,21 +24,6 @@ struct Point {
     x: i32,
     y: i32,
     mark: Mark,
-}
-
-fn proj_dir(depth: u32) -> PathBuf {
-
-    fn rm_dirs(num: u32, path: PathBuf) -> PathBuf {
-        if num == 0 {
-            return path;
-        }
-
-        let parent = path.parent().unwrap().to_path_buf();
-        rm_dirs(num - 1, parent)
-    }
-
-    let exe = std::env::current_exe().unwrap();
-    rm_dirs(depth, exe)
 }
 
 fn walk(cur: Point, key: &KeyPress) -> Point {
@@ -173,12 +156,9 @@ fn pair(points: &Vec<Point>) -> i32 {
 }
 
 fn init(depth: u32) -> Vec<Point> {
-    let proj = proj_dir(depth);
+    let proj = proj_self::proj_dir(depth);
     let file = proj.join("elvish_cheat_codes.txt");
-    let mut input = String::new();
-    let _io = std::fs::File::open(file).unwrap().read_to_string(
-        &mut input,
-    );
+    let input = proj_self::file_to_str(&file);
     get_points(&input)
 }
 
