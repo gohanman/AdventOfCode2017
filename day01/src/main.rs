@@ -1,21 +1,5 @@
 
-use std::path::PathBuf;
-use std::io::Read;
-
-fn proj_dir(depth: u32) -> PathBuf {
-
-    fn rm_dirs(num: u32, path: PathBuf) -> PathBuf {
-        if num == 0 {
-            return path;
-        }
-
-        let parent = path.parent().unwrap().to_path_buf();
-        rm_dirs(num - 1, parent)
-    }
-
-    let exe = std::env::current_exe().unwrap();
-    rm_dirs(depth, exe)
-}
+extern crate proj_self;
 
 fn solve(bytes:&Vec<u8>, step:usize) -> u64 {
     bytes.iter().enumerate().fold(0u64, | acc, (i,val)| {
@@ -36,12 +20,9 @@ fn wide_captcha(input:&str) -> u64 {
 }
 
 fn main() {
-    let proj = proj_dir(3);
+    let proj = proj_self::proj_dir(3);
     let file = proj.join("input.txt");
-    let mut input = String::new();
-    let _io = std::fs::File::open(file).unwrap().read_to_string(
-        &mut input,
-    );
+    let input = proj_self::file_to_str(&file);
     println!("In: {}", input);
     let answer = captcha(&input);
     println!("Captcha {}", answer);
