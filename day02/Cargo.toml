@@ -1,0 +1,10 @@
+[package]
+name = "day02"
+version = "0.1.0"
+authors = ["Andy Theuninck <andy@gohanman.com>"]
+
+[dependencies]
+
+[dependencies.proj_self]
+path = "../proj_self"
+
