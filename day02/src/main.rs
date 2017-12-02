@@ -2,25 +2,30 @@
 extern crate proj_self;
 
 fn div_checksum(lines: &Vec<Vec<u64>>) -> u64 {
-    lines.iter().fold(0, | acc, x | {
-        let mut val = 0;
-        for i in x.iter() {
-            for j in x.iter() {
-                if i != j && i % j == 0 {
-                    val = i / j;
-                } else if i != j && j % i == 0 {
-                    val = j / i;
-                }
+    lines.iter().fold(0, |acc, x| acc + line_div(x))
+}
+
+fn line_div(line: &Vec<u64>) -> u64 {
+    let mut val = 0;
+    'outer: for i in line.iter() {
+        'inner: for j in line.iter() {
+            if i != j && i % j == 0 {
+                val = i / j;
+                break 'outer;
+            } else if i != j && j % i == 0 {
+                val = j / i;
+                break 'outer;
             }
         }
-        acc + val
-    })
+    }
+    val
 }
 
 fn checksum(lines: &Vec<Vec<u64>>) -> u64 {
-    lines.iter().fold(0, | acc, x | {
-        acc + line_checksum(&mut x.clone())
-    })
+    lines.iter().fold(
+        0,
+        |acc, x| acc + line_checksum(&mut x.clone()),
+    )
 }
 
 fn line_checksum(line: &mut Vec<u64>) -> u64 {
@@ -31,14 +36,21 @@ fn line_checksum(line: &mut Vec<u64>) -> u64 {
 }
 
 fn lines_to_vals(lines: &Vec<&str>) -> Vec<Vec<u64>> {
-    lines.iter().map(|x| {
-        let nums = x.split_whitespace();
-        nums.map(|y| y.parse().unwrap()).collect()
-    }).collect()
+    lines
+        .iter()
+        .map(|x| {
+            let nums = x.split_whitespace();
+            nums.map(|y| y.parse().unwrap()).collect()
+        })
+        .collect()
 }
 
 fn str_to_lines(input: &str) -> Vec<&str> {
-    input.split("\n").map(|x| x.trim()).filter(|x| x.len() > 0).collect()
+    input
+        .split("\n")
+        .map(|x| x.trim())
+        .filter(|x| x.len() > 0)
+        .collect()
 }
 
 fn main() {
