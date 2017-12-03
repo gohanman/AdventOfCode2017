@@ -1,4 +1,5 @@
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 #[derive(PartialEq, Eq, Debug, Hash, Clone)]
@@ -62,9 +63,47 @@ fn manhattan(a: &Point, b: &Point) -> i64 {
     x.abs() + y.abs()
 }
 
+fn hash_get(hm: &HashMap<Point, i64>, p: &Point) -> i64 {
+    match hm.get(p) {
+        Some(n) => *n,
+        None => 0,
+    }
+}
+
+fn adj(p: &Point, hm: &HashMap<Point, i64>) -> i64 {
+    hash_get(hm, p)
+        + hash_get(hm, &right(p))
+        + hash_get(hm, &left(p))
+        + hash_get(hm, &up(p))
+        + hash_get(hm, &down(p))
+        + hash_get(hm, &right(&up(p)))
+        + hash_get(hm, &left(&up(p)))
+        + hash_get(hm, &right(&down(p)))
+        + hash_get(hm, &left(&down(p)))
+}
+
+fn more_than(n: i64) -> i64 {
+    let mut ret = Point { x:0, y:0 };
+    let mut all: HashSet<Point> = HashSet::new();
+    let mut hash: HashMap<Point, i64> = HashMap::new();
+    all.insert(ret.clone());
+    hash.insert(ret.clone(), 1);
+    let mut cur = hash_get(&hash, &ret);
+    while cur < n {
+        ret = next(&ret, &all);
+        all.insert(ret.clone());
+        let val = adj(&ret, &hash);
+        hash.insert(ret.clone(), val);
+        cur = hash_get(&hash, &ret);
+    };
+    cur
+}
+
 fn main() {
     let one = nth(325489);
     println!("Distance: {}", manhattan(&one, &Point {x:0, y:0 }));
+    let two = more_than(325489);
+    println!("More than: {}", two);
 }
 
 #[test]
