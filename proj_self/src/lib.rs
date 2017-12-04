@@ -28,6 +28,15 @@ pub fn file_to_str(file: &PathBuf) -> String {
     input
 }
 
+// split a string into lines
+pub fn str_to_lines(input: &str) -> Vec<&str> {
+    input
+        .split("\n")
+        .map(|x| x.trim())
+        .filter(|x| x.len() > 0)
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use std;
