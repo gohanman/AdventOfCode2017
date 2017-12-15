@@ -39,10 +39,16 @@ fn lines_to_fw(lines: &Vec<&str>) -> Firewall {
     fw
 }
 
-fn delayed_fw(lines: &Vec<&str>, delay: i32) -> Firewall {
-    let mut fw = lines_to_fw(lines);
-    fw.packet -= delay;
-    fw
+fn will_hit(layer: &Layer, depth: usize, delay: i32) -> bool {
+    if layer.range == 0 {
+        return false;
+    }
+    if layer.range == 1 {
+        return true;
+    }
+    let time = (depth as i32) + delay;
+    let states = 2 + ((layer.range - 2) * 2);
+    time % states == 0
 }
 
 fn tick(layer: &Layer) -> Layer {
@@ -113,15 +119,20 @@ fn count_damage(firewall: &Firewall, or_hits: bool) -> i32 {
 
 fn safe_delay(lines: &Vec<&str>) -> i32 {
     let mut delay = 1;
-    loop {
+    let fw = lines_to_fw(lines);
+    let layers: Vec<_> = fw.layers.iter().enumerate().filter(|&(_i, x)| x.range > 1).collect();
+    'outer: loop {
         println!("Try delay: {}", delay);
-        let fw = delayed_fw(lines, delay);
-        let dmg = count_damage(&fw, true);
-        if dmg == 0 {
-            return delay;
+        'inner: for &(i, layer) in layers.iter() {
+            if will_hit(layer, i, delay) {
+                delay += 1;
+                continue 'outer;
+            }
         }
-        delay += 1;
+        break 'outer;
     }
+
+    delay
 }
 
 fn main() {
