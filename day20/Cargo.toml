@@ -1,0 +1,12 @@
+[package]
+name = "day20"
+version = "0.1.0"
+authors = ["Andy Theuninck <andy@gohanman.com>"]
+
+[dependencies]
+regex = "0.2"
+lazy_static = "1.0.0"
+
+[dependencies.proj_self]
+path = "../proj_self"
+
