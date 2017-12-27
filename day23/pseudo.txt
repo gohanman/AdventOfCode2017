@@ -20,7 +20,7 @@ while g != 0 {
 }                       // jnz g -13
 
 /// alternate
-f = 0;
+f = 1;
 g = b;
 e = b;
 d = b;
